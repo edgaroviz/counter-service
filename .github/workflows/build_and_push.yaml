@@ -32,7 +32,7 @@ jobs:
         id: ecr_login
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker image
+      - name: Build & push
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           
@@ -44,9 +44,7 @@ jobs:
           
           docker tag counter-service-app:latest $ECR_URI:latest
 
-      - name: Push Docker image to ECR
-        run: |
-          echo ${ECR_URI}
+          echo $ECR_URI
           docker push $ECR_URI:latest
 
       - name: Verify Docker image in ECR
