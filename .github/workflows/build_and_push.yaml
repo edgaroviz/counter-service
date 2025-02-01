@@ -46,7 +46,7 @@ jobs:
 
       - name: Push Docker image to ECR
         run: |
-          echo $ECR_URI
+          echo $(ECR_URI)
           docker push $ECR_URI:latest
 
       - name: Verify Docker image in ECR
