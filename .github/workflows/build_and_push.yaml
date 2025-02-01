@@ -23,7 +23,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'  # Latest stable Python version, avoid 3.13 (not released yet)
+          python-version: '3.9'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -38,6 +38,8 @@ jobs:
           
           ECR_URI="$AWS_ACCOUNT_ID.dkr.ecr.eu-west-1.amazonaws.com/ze-my-ecr"
           
+          echo $(pwd)
+          cd counter_service
           docker build -t counter-service-app:latest .
           
           docker tag counter-service-app:latest $ECR_URI:latest
