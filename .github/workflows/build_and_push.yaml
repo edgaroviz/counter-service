@@ -41,6 +41,8 @@ jobs:
           cd counter_service
           docker build counter-service-app .
 
+          docker tag counter-service-app:$GITHUB_SHA counter-service-app:latest
+
           docker push counter-service-app:$GITHUB_SHA
           docker push counter-service-app:latest
 
