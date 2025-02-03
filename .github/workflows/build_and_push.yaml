@@ -39,7 +39,7 @@ jobs:
           ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze-my-ecr"
           
           cd counter_service
-          docker build counter-service-app .
+          docker build -t counter-service-app .
 
           docker tag counter-service-app:$GITHUB_SHA counter-service-app:latest
 
