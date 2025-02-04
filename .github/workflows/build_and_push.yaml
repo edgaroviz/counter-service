@@ -152,6 +152,6 @@ jobs:
         run: |
           echo "Hash ${{ github.sha }} is updated as image tag in values file"
           yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service/values.yaml
-          git -C my-infra commit -am "Image tag updated in values file"
-          git -C my-infra push origin main
+          git -C devops-infra commit -am "Image tag updated in values file"
+          git -C devops-infra push origin main
           echo "Hash ${{ github.sha }} is pushed to values file image tag" >> $GITHUB_STEP_SUMMARY
