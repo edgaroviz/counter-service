@@ -112,28 +112,46 @@ jobs:
       #     git push origin master --force-with-lease
       #     echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Checkout devops-infra repo
-        uses: actions/checkout@v4
-        with:
-          repository: edgaroviz/devops-infra
-          ref: 'master'
-          token:  ${{ secrets.PAT_ACTIONS }}
+      # - name: Checkout devops-infra repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: edgaroviz/devops-infra
+      #     ref: 'master'
+      #     token:  ${{ secrets.PAT_ACTIONS }}
 
-      - name: setup git config
+      # - name: setup git config
+      #   run: |
+      #     git config user.name "push-bot"
+      #     git config user.email "${{ secrets.USER_EMAIL }}"
+
+      # - name: Change image tag in chart values file
+      #   run: |
+      #     echo "Change image tag to ${{ github.sha }}"
+      #     pwd
+      #     ls
+      #     yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
+
+      # - name:
+        # run: |
+        #   git commit -am "Image tag update in values file"
+        #   git push origin master
+
+      - name: Set up Git
         run: |
-          git config user.name "push-bot"
-          git config user.email "${{ secrets.USER_EMAIL }}"
-
-      - name: Change image tag in chart values file
+          git config --global user.name '{{ secrets.USER_NAME }}'
+          git config --global user.email '{{ secrets.USER_EMAIL }}'
+  
+      - name: Clone target repository
         run: |
-          echo "Change image tag to ${{ github.sha }}"
-          pwd
-          ls
-          yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
-
-      - name:
+          git clone https://${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
+  
+  
+      - name: Append contents within values file
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
-          git commit -am "Image tag update in values file"
-          git push origin master
-
-
+          echo "Hash ${{ github.sha }} is updated as image tag in values file"
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service/values.yaml
+          git -C my-infra commit -am "Image tag updated in values file"
+          git -C my-infra push origin main
+          echo "Hash ${{ github.sha }} is pushed to values file image tag" >> $GITHUB_STEP_SUMMARY
