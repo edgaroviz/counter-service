@@ -86,20 +86,43 @@ jobs:
       #     git push origin main
       #     echo "Updated image tag to ${{ github.sha }}"
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "${{ secrets.USER_NAME }}"
-          git config --global user.email "${{ secrets.USER_EMAIL }}"
+      # - name: Set up Git
+      #   run: |
+      #     git config --global user.name "${{ secrets.USER_NAME }}"
+      #     git config --global user.email "${{ secrets.USER_EMAIL }}"
 
-      - name: Set up Git remote with PAT
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
+      # - name: Set up Git remote with PAT
+      #   run: |
+      #     git remote set-url origin https://x-access-token:${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
 
-      - name: Fetch and rebase from master
+      # - name: Fetch and rebase from master
+      #   run: |
+      #     echo $(git branch)
+      #     git fetch origin
+      #     git pull
+
+
+
+      # - name: Push values.yaml to master
+      #   run: |
+      #     echo "current directory:"
+      #     echo $(pwd)
+      #     git add charts/counter-service/values.yaml
+      #     git commit -m "Image tag update on build"
+      #     git push origin master --force-with-lease
+      #     echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Checkout devops-infra repo
+        uses: actions/checkout@v3
+        with:
+          repository: devops-infra
+          ref: 'master'
+          token:  ${{ secrets.PAT_ACTIONS }}
+
+      - name: setup git config
         run: |
-          echo $(git branch)
-          git fetch origin
-          git pull
+          git config user.name "${{ secrets.USER_NAME }}""
+          git config user.email "${{ secrets.USER_EMAIL }}"
 
       - name: Change image tag in chart values file
         run: |
@@ -107,13 +130,9 @@ jobs:
           pwd
           yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
 
-      - name: Push values.yaml to master
+      - name:
         run: |
-          echo "current directory:"
-          echo $(pwd)
-          git add charts/counter-service/values.yaml
-          git commit -m "Image tag update on build"
-          git push origin master --force-with-lease
-          echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          git commit -am "Image tag update in values file"
+          git push origin master
 
 
