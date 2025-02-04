@@ -69,7 +69,8 @@ jobs:
         run: |
           echo "Updating image tag to ${{ github.sha }}"
           pwd
-          yq eval ".image.tag = \"${{ github.sha }}\"" -i charts/counter-service/values.yaml         
+          ls
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service/values.yaml         
           git -C devops-infra commit -am "Update gibhub-sha to image tag value"
           git -C devops-infra push origin main
           
