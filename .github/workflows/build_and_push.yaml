@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      - feature-git-action-yq-commit
+      - feature-git-action-yq-commit-fit
 
 permissions:
   id-token: write
