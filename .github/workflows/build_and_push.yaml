@@ -145,7 +145,13 @@ jobs:
         run: |
           git clone https://${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
   
-  
+      - name: Detect Default Branch
+        id: get_default_branch
+        run: |
+          DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+          echo "Default branch detected: $DEFAULT_BRANCH"
+          echo "DEFAULT_BRANCH=$DEFAULT_BRANCH" >> $GITHUB_ENV
+
       - name: Append contents within values file
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
