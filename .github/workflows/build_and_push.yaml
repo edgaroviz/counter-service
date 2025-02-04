@@ -43,6 +43,13 @@ jobs:
         id: ecr_login
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Set up yq
+        run: |
+          sudo apt-get update > /dev/null 2>&1
+          sudo apt-get install -y wget > /dev/null 2>&1
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
       - name: Build & push
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
@@ -60,3 +67,17 @@ jobs:
       - name: Verify Docker image in ECR
         run: |
           aws ecr describe-images --repository-name ze-my-ecr --region eu-west-1
+
+      - name: Clone infra repo
+        run: |
+          git clone https://${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
+
+      - name: YQ to change the image tag to github-sha
+        run: |
+          echo "Updating image tag to ${{ github.sha }}"
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-app/values.yaml          
+          git -C devops-infra commit -am "Update gibhub-sha to image tag value"
+          git -C devops-infra push origin main
+          
+          echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
