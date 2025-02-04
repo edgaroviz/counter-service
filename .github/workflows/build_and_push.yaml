@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+      - feature-git-action-yq-commit
+
 permissions:
   id-token: write
   contents: write
@@ -15,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v3
@@ -61,17 +65,46 @@ jobs:
         run: |
           aws ecr describe-images --repository-name ze-my-ecr --region eu-west-1
 
-      - name: Clone infra repo
+      # - name: Login to Github
+      #   run: |
+      #     git config --global user.email "${{ secrets.USER_EMAIL }}"
+      #     git config --global user.name "${{ secrets.USER_NAME }}"
+      #     echo "${{ secrets.PAT_ACTIONS }}" | gh auth login --with-token
+
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
+
+      # - name: Update image tag in values.yaml
+      #   run: |
+      #     echo "Updating image tag to ${{ github.sha }}"
+      #     cd devops-infra
+      #     git checkout master
+      #     cd charts/counter-service
+      #     yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
+      #     git add values.yaml
+      #     git commit -m "Update github-sha to image tag value"
+      #     git push origin main
+      #     echo "Updated image tag to ${{ github.sha }}"
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "${{ secrets.USER_NAME }}"
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+
+      - name: Clone target repository
         run: |
           git clone https://${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
 
-      - name: YQ to change the image tag to github-sha
+
+      - name: Change image tag in chart values file
         run: |
-          echo "Updating image tag to ${{ github.sha }}"
+          echo "Change image tag to ${{ github.sha }}"
           pwd
           ls
+          cd devops-infra
+          ls
+
           yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service/values.yaml
-          git -C devops-infra commit -am "Update gibhub-sha to image tag value"
+          git -C devops-infra commit -am "Updated image tag in values.yaml after new image build"
           git -C devops-infra push origin main
-          
-          echo "Updated image tag to ${{ github.sha }}"
+          echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
