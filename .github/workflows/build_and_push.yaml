@@ -115,7 +115,7 @@ jobs:
       - name: Checkout devops-infra repo
         uses: actions/checkout@v3
         with:
-          repository: devops-infra
+          repository: edgaroviz/devops-infra
           ref: 'master'
           token:  ${{ secrets.PAT_ACTIONS }}
 
