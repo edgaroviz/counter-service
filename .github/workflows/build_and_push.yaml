@@ -113,7 +113,7 @@ jobs:
       #     echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout devops-infra repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: edgaroviz/devops-infra
           ref: 'master'
@@ -121,13 +121,14 @@ jobs:
 
       - name: setup git config
         run: |
-          git config user.name "${{ secrets.USER_NAME }}"
+          git config user.name "push-bot"
           git config user.email "${{ secrets.USER_EMAIL }}"
 
       - name: Change image tag in chart values file
         run: |
           echo "Change image tag to ${{ github.sha }}"
           pwd
+          ls
           yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
 
       - name:
