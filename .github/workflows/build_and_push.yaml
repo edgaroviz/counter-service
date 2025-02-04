@@ -99,16 +99,7 @@ jobs:
       - name: Change image tag in chart values file
         run: |
           echo "Change image tag to ${{ github.sha }}"
-          pwd
-          ls
-          cd devops-infra/charts/
-          ls
-          cd counter-service
-          pwd
           yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
-          pwd
-          cd ../..
-          pwd
           git -C devops-infra commit -am "Updated image tag in values.yaml after new image build"
           git -C devops-infra push origin main
           echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
