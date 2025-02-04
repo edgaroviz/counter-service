@@ -16,13 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v3
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: eu-west-1
-
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -75,9 +68,8 @@ jobs:
       - name: YQ to change the image tag to github-sha
         run: |
           echo "Updating image tag to ${{ github.sha }}"
-          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-app/values.yaml          
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service/values.yaml         
           git -C devops-infra commit -am "Update gibhub-sha to image tag value"
           git -C devops-infra push origin main
           
-          echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-
+          echo "Updated image tag to ${{ github.sha }}"
