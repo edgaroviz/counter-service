@@ -107,7 +107,7 @@ jobs:
           pwd
           yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
           pwd
-          cd ../../..
+          cd ../..
           pwd
           git -C devops-infra commit -am "Updated image tag in values.yaml after new image build"
           git -C devops-infra push origin main
