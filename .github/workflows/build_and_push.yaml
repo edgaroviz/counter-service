@@ -65,77 +65,6 @@ jobs:
         run: |
           aws ecr describe-images --repository-name ze-my-ecr --region eu-west-1
 
-      # - name: Login to Github
-      #   run: |
-      #     git config --global user.email "${{ secrets.USER_EMAIL }}"
-      #     git config --global user.name "${{ secrets.USER_NAME }}"
-      #     echo "${{ secrets.PAT_ACTIONS }}" | gh auth login --with-token
-
-      # - name: Checkout repository
-      #   uses: actions/checkout@v4
-
-      # - name: Update image tag in values.yaml
-      #   run: |
-      #     echo "Updating image tag to ${{ github.sha }}"
-      #     cd devops-infra
-      #     git checkout master
-      #     cd charts/counter-service
-      #     yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
-      #     git add values.yaml
-      #     git commit -m "Update github-sha to image tag value"
-      #     git push origin main
-      #     echo "Updated image tag to ${{ github.sha }}"
-
-      # - name: Set up Git
-      #   run: |
-      #     git config --global user.name "${{ secrets.USER_NAME }}"
-      #     git config --global user.email "${{ secrets.USER_EMAIL }}"
-
-      # - name: Set up Git remote with PAT
-      #   run: |
-      #     git remote set-url origin https://x-access-token:${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
-
-      # - name: Fetch and rebase from master
-      #   run: |
-      #     echo $(git branch)
-      #     git fetch origin
-      #     git pull
-
-
-
-      # - name: Push values.yaml to master
-      #   run: |
-      #     echo "current directory:"
-      #     echo $(pwd)
-      #     git add charts/counter-service/values.yaml
-      #     git commit -m "Image tag update on build"
-      #     git push origin master --force-with-lease
-      #     echo "Updated image tag to ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-
-      # - name: Checkout devops-infra repo
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: edgaroviz/devops-infra
-      #     ref: 'master'
-      #     token:  ${{ secrets.PAT_ACTIONS }}
-
-      # - name: setup git config
-      #   run: |
-      #     git config user.name "push-bot"
-      #     git config user.email "${{ secrets.USER_EMAIL }}"
-
-      # - name: Change image tag in chart values file
-      #   run: |
-      #     echo "Change image tag to ${{ github.sha }}"
-      #     pwd
-      #     ls
-      #     yq eval ".image.tag = \"${{ github.sha }}\"" -i values.yaml
-
-      # - name:
-        # run: |
-        #   git commit -am "Image tag update in values file"
-        #   git push origin master
-
       - name: Set up Git
         run: |
           git config --global user.name '{{ secrets.USER_NAME }}'
@@ -144,13 +73,6 @@ jobs:
       - name: Clone target repository
         run: |
           git clone https://${{ secrets.PAT_ACTIONS }}@github.com/edgaroviz/devops-infra.git
-  
-      # - name: Detect Default Branch
-      #   id: get_default_branch
-      #   run: |
-      #     DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
-      #     echo "Default branch detected: $DEFAULT_BRANCH"
-      #     echo "DEFAULT_BRANCH=$DEFAULT_BRANCH" >> $GITHUB_ENV
 
       - name: Append contents within values file
         env:
