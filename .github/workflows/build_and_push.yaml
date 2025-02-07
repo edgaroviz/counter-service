@@ -81,7 +81,7 @@ jobs:
           pwd
           ls
           echo "Hash ${{ github.sha }} is updated as image tag in values file"
-          yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${{ github.sha }}\"" -i kustomize-base/deployment.yaml
+          yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${{ github.sha }}\"" -i devops-infra/kustomize-base/deployment.yaml
           git -C devops-infra add kustomize-base/deployment.yaml
           git -C devops-infra commit -m "Updated image tag to ${{ github.sha }}"
           git -C devops-infra push origin master
