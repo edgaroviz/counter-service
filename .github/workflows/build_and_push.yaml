@@ -21,7 +21,7 @@ jobs:
           persist-credentials: false
 
       - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::920373021859:role/ze_my_admin_role
           aws-region: eu-west-1
@@ -51,7 +51,7 @@ jobs:
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           
-          ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze-my-ecr"
+          ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze_my_ecr"
           
           cd counter_service_app
           docker build -t $ECR_URI:$GITHUB_SHA .
@@ -63,7 +63,7 @@ jobs:
 
       - name: Verify Docker image in ECR
         run: |
-          aws ecr describe-images --repository-name ze-my-ecr --region eu-west-1
+          aws ecr describe-images --repository-name ze_my_ecr --region eu-west-1
 
       - name: Set up Git
         run: |
