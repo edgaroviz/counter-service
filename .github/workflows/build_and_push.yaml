@@ -78,6 +78,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
+          pwd
+          ls
           echo "Hash ${{ github.sha }} is updated as image tag in values file"
           yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${{ github.sha }}\"" -i kustomize-base/deployment.yaml
           git -C devops-infra add kustomize-base/deployment.yaml
