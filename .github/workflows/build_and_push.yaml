@@ -79,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
           echo "Hash ${{ github.sha }} is updated as image tag in values file"
-          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/conter-service-app/values.yaml
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service-app/values.yaml
           git -C devops-infra commit -am "Image tag updated in values file"
           git -C devops-infra push origin master
           echo "Hash ${{ github.sha }} is pushed to values file image tag" >> $GITHUB_STEP_SUMMARY
