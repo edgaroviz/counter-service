@@ -14,9 +14,9 @@ def index():
     elif request.method == "GET":
         request_counters["GET"] += 1
     return f"""
-            This is {env}!!!
-            Our GET counter is: {request_counters['GET']}
-            Our POST counter is: {request_counters['POST']}
+            This is {env}!!!<br>
+            Our GET counter is: {request_counters['GET']}<br>
+            Our POST counter is: {request_counters['POST']}<br>
             Thanks and dont forget to post once in a while :)"""
 
 
