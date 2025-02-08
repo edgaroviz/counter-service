@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      - fix-action-directory
+      - adjust-action-for-kustomize
 
 permissions:
   id-token: write
@@ -78,8 +78,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze_my_ecr"
           echo "Hash ${{ github.sha }} is updated as image tag in values file"
-          yq eval ".image.tag = \"${{ github.sha }}\"" -i devops-infra/charts/counter-service-app/values.yaml
-          git -C devops-infra commit -am "Image tag updated in values file"
+          yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${{ github.sha }}\"" -i devops-infra/kustomize-base/deployment.yaml
+          git -C devops-infra add kustomize-base/deployment.yaml
+          git -C devops-infra commit -m "Updated image tag to ${{ github.sha }}"
           git -C devops-infra push origin master
           echo "Hash ${{ github.sha }} is pushed to values file image tag" >> $GITHUB_STEP_SUMMARY
