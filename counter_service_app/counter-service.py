@@ -1,5 +1,6 @@
 #!flask/bin/python
 from flask import Flask, request
+import os
 
 app = Flask(__name__)
 
@@ -16,8 +17,7 @@ def index():
             This is {env}!!!
             Our GET counter is: {request_counters['GET']}
             Our POST counter is: {request_counters['POST']}
-            Thanks and dont forget to post once in a while :)
-            """
+            Thanks and dont forget to post once in a while :)"""
 
 
 if __name__ == '__main__':
