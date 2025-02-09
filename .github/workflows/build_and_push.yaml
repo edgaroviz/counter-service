@@ -73,12 +73,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
           pwd
+          ls
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze_my_ecr"
           IMAGE_TAG="0d55706f9040e4c309c8df60d5d6fea0c272ac64"
           DEPLOYMENT_FILE="devops-infra/kustomize-base/deployment.yaml"
           echo "Hash ${IMAGE_TAG} is updated as image tag in values file"
-          yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${IMAGE_TAG}\"" -i "${DEPLOYMENT_FILE}"
+          yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${IMAGE_TAG}\"" -i devops-infra/kustomize-base/deployment.yaml
           git -C devops-infra add devops-infra/kustomize-base/deployment.yaml
 
           # Check if there are actual changes
@@ -87,5 +88,5 @@ jobs:
               git -C devops-infra push origin master
               echo "Hash ${IMAGE_TAG} is pushed to values file image tag" >> $GITHUB_STEP_SUMMARY
           else
-              echo "No changes detected in ${DEPLOYMENT_FILE}, skipping commit & push."
+              echo "No changes detected in devops-infra/kustomize-base/deployment.yaml, skipping commit & push."
           fi
