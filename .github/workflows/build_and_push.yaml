@@ -1,11 +1,10 @@
-name: build_and_push_to_ecr
+name: Build and push to ECR
 
 on:
   workflow_dispatch:
   push:
     branches:
       - master
-      - finalize-app-and-action
 
 permissions:
   id-token: write
