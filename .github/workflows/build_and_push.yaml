@@ -72,14 +72,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_ACTIONS }}
         run: |
+          pwd
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.eu-west-1.amazonaws.com/ze_my_ecr"
           IMAGE_TAG="0d55706f9040e4c309c8df60d5d6fea0c272ac64"
           DEPLOYMENT_FILE="devops-infra/kustomize-base/deployment.yaml"
           echo "Hash ${IMAGE_TAG} is updated as image tag in values file"
           yq eval ".spec.template.spec.containers[0].image = \"${ECR_URI}:${IMAGE_TAG}\"" -i "${DEPLOYMENT_FILE}"
-          git -C devops-infra add "${DEPLOYMENT_FILE}"
+          git -C devops-infra add devops-infra/kustomize-base/deployment.yaml
 
+          # Check if there are actual changes
           if ! git -C devops-infra diff --cached --quiet; then
               git -C devops-infra commit -m "Updated image tag to ${IMAGE_TAG}"
               git -C devops-infra push origin master
