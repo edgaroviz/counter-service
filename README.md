@@ -1,4 +1,4 @@
-# DevOps Infrastructure Repository (devops-infra)
+# Counter-serivce application repository (counter-service)
 
 ## Overview
 The **counter-service** repository is the core infrastructure repository for building the application container and pushing it to EKS. It contains the app Code,Dockerfile and automation appending the new commit hash the the image tag. The repository also includes CI/CD pipelines for seamless deployment and integration with GitHub Actions.
